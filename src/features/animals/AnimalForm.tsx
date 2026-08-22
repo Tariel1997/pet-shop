@@ -1,5 +1,6 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent, type KeyboardEvent } from 'react'
 
+import { convertGelToUsd } from '../../api/currency.api.ts'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -23,6 +24,12 @@ interface AnimalFormProps {
   onCancel: () => void
 }
 
+const blockInvalidNumberKey = (event: KeyboardEvent<HTMLInputElement>) => {
+  if (['-', '+', 'e', 'E'].includes(event.key)) {
+    event.preventDefault()
+  }
+}
+
 export const AnimalForm = ({
   initialData,
   submitting,
@@ -30,9 +37,6 @@ export const AnimalForm = ({
   onCancel,
 }: AnimalFormProps) => {
   const [name, setName] = useState<string>(initialData?.name ?? '')
-  const [priceUSD, setPriceUSD] = useState<string>(
-    initialData ? String(initialData.priceUSD) : '',
-  )
   const [priceGEL, setPriceGEL] = useState<string>(
     initialData ? String(initialData.priceGEL) : '',
   )
@@ -45,76 +49,120 @@ export const AnimalForm = ({
   const [stock, setStock] = useState<string>(
     initialData ? String(initialData.stock) : '',
   )
+  const [imageUrl, setImageUrl] = useState<string>(initialData?.imageUrl ?? '')
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [converting, setConverting] = useState<boolean>(false)
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     if (!name.trim()) {
-      setValidationError('სახელი სავალდებულოა')
+      setValidationError('Name is required')
       return
     }
 
-    if (priceUSD.trim() === '' || priceGEL.trim() === '' || stock.trim() === '') {
-      setValidationError('ფასები და მარაგი სავალდებულოა')
+    if (!description.trim()) {
+      setValidationError('Description is required')
+      return
+    }
+
+    if (!imageUrl.trim()) {
+      setValidationError('Image URL is required')
+      return
+    }
+
+    const priceGELValue = Number(priceGEL)
+    const stockValue = Number(stock)
+
+    if (
+      priceGEL.trim() === '' ||
+      Number.isNaN(priceGELValue) ||
+      priceGELValue <= 0
+    ) {
+      setValidationError('Price (GEL) must be greater than 0')
+      return
+    }
+
+    if (stock.trim() === '' || Number.isNaN(stockValue) || stockValue <= 0) {
+      setValidationError('Stock must be greater than 0')
       return
     }
 
     setValidationError(null)
-    onSubmit({
-      name: name.trim(),
-      priceUSD: Number(priceUSD),
-      priceGEL: Number(priceGEL),
-      description: description.trim(),
-      isPopular,
-      stock: Number(stock),
-    })
+
+    try {
+      setConverting(true)
+      const priceUSDValue = await convertGelToUsd(priceGELValue)
+
+      onSubmit({
+        name: name.trim(),
+        priceUSD: priceUSDValue,
+        priceGEL: priceGELValue,
+        description: description.trim(),
+        isPopular,
+        stock: stockValue,
+        imageUrl: imageUrl.trim(),
+      })
+    } catch {
+      setValidationError('Could not calculate the USD price, please try again')
+    } finally {
+      setConverting(false)
+    }
   }
+
+  const isBusy = submitting || converting
 
   return (
     <FormWrapper onSubmit={handleSubmit}>
       <FieldGroup>
-        <Label htmlFor="name">სახელი</Label>
+        <Label htmlFor="name">Name</Label>
         <Input
           id="name"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="მაგ. Andrew Bojangles"
+          placeholder="e.g. Andrew Bojangles"
         />
       </FieldGroup>
 
       <FieldGroup>
-        <Label htmlFor="priceUSD">ფასი (USD)</Label>
+        <Label htmlFor="imageUrl">Image URL</Label>
         <Input
-          id="priceUSD"
-          type="number"
-          value={priceUSD}
-          onChange={(event) => setPriceUSD(event.target.value)}
+          id="imageUrl"
+          type="url"
+          value={imageUrl}
+          onChange={(event) => setImageUrl(event.target.value)}
+          placeholder="https://example.com/photo.jpg"
         />
       </FieldGroup>
 
       <FieldGroup>
-        <Label htmlFor="priceGEL">ფასი (GEL)</Label>
+        <Label htmlFor="priceGEL">Price (GEL)</Label>
         <Input
           id="priceGEL"
           type="number"
+          min={1}
+          step="0.01"
           value={priceGEL}
+          onKeyDown={blockInvalidNumberKey}
           onChange={(event) => setPriceGEL(event.target.value)}
         />
       </FieldGroup>
 
       <FieldGroup>
-        <Label htmlFor="stock">მარაგი</Label>
+        <Label htmlFor="stock">Stock</Label>
         <Input
           id="stock"
           type="number"
+          min={1}
+          step="1"
           value={stock}
+          onKeyDown={blockInvalidNumberKey}
           onChange={(event) => setStock(event.target.value)}
         />
       </FieldGroup>
 
       <FieldGroup>
-        <Label htmlFor="description">აღწერა</Label>
+        <Label htmlFor="description">Description</Label>
         <TextArea
           id="description"
           value={description}
@@ -128,17 +176,21 @@ export const AnimalForm = ({
           checked={isPopular}
           onChange={(event) => setIsPopular(event.target.checked)}
         />
-        პოპულარული
+        Popular
       </CheckboxRow>
 
       {validationError && <ErrorText>{validationError}</ErrorText>}
 
       <FormActions>
         <SecondaryButton type="button" onClick={onCancel}>
-          გაუქმება
+          Cancel
         </SecondaryButton>
-        <PrimaryButton type="submit" disabled={submitting}>
-          {submitting ? 'ინახება...' : 'შენახვა'}
+        <PrimaryButton type="submit" disabled={isBusy}>
+          {converting
+            ? 'Calculating USD price...'
+            : submitting
+              ? 'Saving...'
+              : 'Save'}
         </PrimaryButton>
       </FormActions>
     </FormWrapper>

@@ -1,10 +1,11 @@
+import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog.tsx'
 import { ErrorBanner } from '../../components/ui/ErrorBanner.tsx'
 import { Modal } from '../../components/ui/Modal.tsx'
 import {
-  IconTextButton,
+  IconButton,
   PrimaryButton,
 } from '../../components/ui/styles/Button.styles.ts'
 import {
@@ -72,7 +73,8 @@ export const CategoriesPage = () => {
       <PageHeader>
         <PageTitle>Categories</PageTitle>
         <PrimaryButton onClick={() => setModalState({ mode: 'create' })}>
-          + კატეგორიის დამატება
+          <Plus size={16} />
+          Add Category
         </PrimaryButton>
       </PageHeader>
 
@@ -84,8 +86,8 @@ export const CategoriesPage = () => {
         <Table>
           <Thead>
             <tr>
-              <Th>სათაური</Th>
-              <Th>აღწერა</Th>
+              <Th>Title</Th>
+              <Th>Description</Th>
               <Th />
             </tr>
           </Thead>
@@ -95,16 +97,18 @@ export const CategoriesPage = () => {
                 <Td>{category.title}</Td>
                 <Td>{category.description}</Td>
                 <ActionsCell>
-                  <IconTextButton
+                  <IconButton
+                    title="Edit category"
                     onClick={() => setModalState({ mode: 'edit', category })}
                   >
-                    რედაქტირება
-                  </IconTextButton>
-                  <IconTextButton
+                    <Pencil size={16} />
+                  </IconButton>
+                  <IconButton
+                    title="Delete category"
                     onClick={() => setModalState({ mode: 'delete', category })}
                   >
-                    წაშლა
-                  </IconTextButton>
+                    <Trash2 size={16} />
+                  </IconButton>
                 </ActionsCell>
               </Tr>
             ))}
@@ -112,13 +116,13 @@ export const CategoriesPage = () => {
         </Table>
 
         {!loading && items.length === 0 && (
-          <EmptyState>კატეგორიები არ მოიძებნა</EmptyState>
+          <EmptyState>No categories found</EmptyState>
         )}
       </TableWrapper>
 
       {modalState.mode === 'create' && (
         <Modal
-          title="ახალი კატეგორია"
+          title="New Category"
           onClose={() => setModalState({ mode: 'closed' })}
         >
           <CategoryForm
@@ -131,7 +135,7 @@ export const CategoriesPage = () => {
 
       {modalState.mode === 'edit' && (
         <Modal
-          title="კატეგორიის რედაქტირება"
+          title="Edit Category"
           onClose={() => setModalState({ mode: 'closed' })}
         >
           <CategoryForm
@@ -145,8 +149,8 @@ export const CategoriesPage = () => {
 
       {modalState.mode === 'delete' && (
         <ConfirmDialog
-          title="კატეგორიის წაშლა"
-          message={`დარწმუნებული ხართ, რომ გსურთ წაშალოთ "${modalState.category.title}"?`}
+          title="Delete Category"
+          message={`Are you sure you want to delete "${modalState.category.title}"?`}
           onConfirm={() => handleDelete(modalState.category.id)}
           onCancel={() => setModalState({ mode: 'closed' })}
         />

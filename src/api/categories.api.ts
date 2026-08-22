@@ -1,6 +1,6 @@
 import { API_KEY, BASE_URL } from '../config.ts'
 import type { Category, CategoryFormData } from '../types/category.ts'
-import type { EntityId } from '../types/common.ts'
+import type { ApiStatus, EntityId } from '../types/common.ts'
 
 const headers: HeadersInit = {
   'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ const updateCategory = async (id: EntityId, body: CategoryFormData) => {
   return await response.json()
 }
 
-const deleteCategory = async (id: EntityId) => {
+const deleteCategory = async (id: EntityId): Promise<ApiStatus> => {
   const response = await fetch(`${BASE_URL}/categories/${id}`, {
     method: 'DELETE',
     headers,
@@ -81,7 +81,7 @@ const deleteCategory = async (id: EntityId) => {
 
   if (!response.ok) throw new Error(await parseErrorMessage(response))
 
-  return { status: 'success' as const }
+  return { status: 'success' }
 }
 
 export { fetchCategories, createCategory, updateCategory, deleteCategory }

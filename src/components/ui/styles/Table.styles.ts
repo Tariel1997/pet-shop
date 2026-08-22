@@ -63,3 +63,23 @@ export const EmptyState = styled.div`
   color: #9a9a9a;
   font-size: 14px;
 `
+
+export const Avatar = styled.img`
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  background-color: #f0f0f0;
+  display: block;
+`
+
+export const AvatarPlaceholder = styled.div`
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b5b5b5;
+`

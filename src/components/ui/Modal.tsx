@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import {
@@ -20,7 +21,7 @@ export const Modal = ({ title, onClose, children }: ModalProps) => (
       <ModalHeader>
         <ModalTitle>{title}</ModalTitle>
         <CloseButton type="button" onClick={onClose}>
-          ✕
+          <X size={18} />
         </CloseButton>
       </ModalHeader>
       {children}

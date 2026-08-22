@@ -1,14 +1,17 @@
+import { PawPrint, Pencil, Plus, Tags, Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog.tsx'
 import { ErrorBanner } from '../../components/ui/ErrorBanner.tsx'
 import { Modal } from '../../components/ui/Modal.tsx'
 import {
-  IconTextButton,
+  IconButton,
   PrimaryButton,
 } from '../../components/ui/styles/Button.styles.ts'
 import {
   ActionsCell,
+  Avatar,
+  AvatarPlaceholder,
   EmptyState,
   PageHeader,
   PageTitle,
@@ -84,7 +87,8 @@ export const AnimalsPage = () => {
       <PageHeader>
         <PageTitle>Animals</PageTitle>
         <PrimaryButton onClick={() => setModalState({ mode: 'create' })}>
-          + ცხოველის დამატება
+          <Plus size={16} />
+          Add Animal
         </PrimaryButton>
       </PageHeader>
 
@@ -104,42 +108,57 @@ export const AnimalsPage = () => {
         <Table>
           <Thead>
             <tr>
-              <Th>User</Th>
+              <Th />
+              <Th>Name</Th>
               <Th>Price (USD)</Th>
               <Th>Price (GEL)</Th>
+              <Th>Description</Th>
+              <Th>Popular</Th>
               <Th>Stock</Th>
-              <Th>Activity</Th>
               <Th />
             </tr>
           </Thead>
           <tbody>
             {filteredItems.map((animal) => (
               <Tr key={animal.id}>
+                <Td>
+                  {animal.imageUrl ? (
+                    <Avatar src={animal.imageUrl} alt={animal.name} />
+                  ) : (
+                    <AvatarPlaceholder>
+                      <PawPrint size={18} />
+                    </AvatarPlaceholder>
+                  )}
+                </Td>
                 <Td>{animal.name}</Td>
-                <Td>${animal.priceUSD}</Td>
+                <Td>${animal.priceUSD.toFixed(2)}</Td>
                 <Td>{animal.priceGEL} ₾</Td>
-                <Td>{animal.stock}</Td>
+                <Td>{animal.description}</Td>
                 <Td>
                   <Badge $popular={animal.isPopular}>
                     {animal.isPopular ? 'Popular' : 'Regular'}
                   </Badge>
                 </Td>
+                <Td>{animal.stock}</Td>
                 <ActionsCell>
-                  <IconTextButton
+                  <IconButton
+                    title="Manage categories"
                     onClick={() => setModalState({ mode: 'categories', animal })}
                   >
-                    კატეგორიები
-                  </IconTextButton>
-                  <IconTextButton
+                    <Tags size={16} />
+                  </IconButton>
+                  <IconButton
+                    title="Edit animal"
                     onClick={() => setModalState({ mode: 'edit', animal })}
                   >
-                    რედაქტირება
-                  </IconTextButton>
-                  <IconTextButton
+                    <Pencil size={16} />
+                  </IconButton>
+                  <IconButton
+                    title="Delete animal"
                     onClick={() => setModalState({ mode: 'delete', animal })}
                   >
-                    წაშლა
-                  </IconTextButton>
+                    <Trash2 size={16} />
+                  </IconButton>
                 </ActionsCell>
               </Tr>
             ))}
@@ -147,15 +166,12 @@ export const AnimalsPage = () => {
         </Table>
 
         {!loading && filteredItems.length === 0 && (
-          <EmptyState>ცხოველები არ მოიძებნა</EmptyState>
+          <EmptyState>No animals found</EmptyState>
         )}
       </TableWrapper>
 
       {modalState.mode === 'create' && (
-        <Modal
-          title="ახალი ცხოველი"
-          onClose={() => setModalState({ mode: 'closed' })}
-        >
+        <Modal title="New Animal" onClose={() => setModalState({ mode: 'closed' })}>
           <AnimalForm
             submitting={submitting}
             onSubmit={handleCreate}
@@ -165,10 +181,7 @@ export const AnimalsPage = () => {
       )}
 
       {modalState.mode === 'edit' && (
-        <Modal
-          title="ცხოველის რედაქტირება"
-          onClose={() => setModalState({ mode: 'closed' })}
-        >
+        <Modal title="Edit Animal" onClose={() => setModalState({ mode: 'closed' })}>
           <AnimalForm
             initialData={modalState.animal}
             submitting={submitting}
@@ -180,8 +193,8 @@ export const AnimalsPage = () => {
 
       {modalState.mode === 'delete' && (
         <ConfirmDialog
-          title="ცხოველის წაშლა"
-          message={`დარწმუნებული ხართ, რომ გსურთ წაშალოთ "${modalState.animal.name}"?`}
+          title="Delete Animal"
+          message={`Are you sure you want to delete "${modalState.animal.name}"?`}
           onConfirm={() => handleDelete(modalState.animal.id)}
           onCancel={() => setModalState({ mode: 'closed' })}
         />

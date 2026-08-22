@@ -1,10 +1,12 @@
+import { Plus, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { ErrorBanner } from '../../components/ui/ErrorBanner.tsx'
 import { Modal } from '../../components/ui/Modal.tsx'
 import {
-  IconTextButton,
+  IconButton,
   PrimaryButton,
+  SecondaryButton,
 } from '../../components/ui/styles/Button.styles.ts'
 import {
   ErrorText,
@@ -55,15 +57,15 @@ export const AnimalsWithCategoriesPage = () => {
   }, [dispatch])
 
   const getAnimalName = (animalId: string): string =>
-    animals.find((animal) => animal.id === animalId)?.name ?? 'უცნობი ცხოველი'
+    animals.find((animal) => animal.id === animalId)?.name ?? 'Unknown animal'
 
   const getCategoryTitle = (categoryId: string): string =>
     categories.find((category) => category.id === categoryId)?.title ??
-    'უცნობი კატეგორია'
+    'Unknown category'
 
   const handleCreate = () => {
     if (!selectedAnimalId || !selectedCategoryId) {
-      setValidationError('აირჩიეთ ცხოველი და კატეგორია')
+      setValidationError('Please select an animal and a category')
       return
     }
 
@@ -84,7 +86,8 @@ export const AnimalsWithCategoriesPage = () => {
       <PageHeader>
         <PageTitle>Animals With Categories</PageTitle>
         <PrimaryButton onClick={() => setIsCreateOpen(true)}>
-          + კავშირის დამატება
+          <Plus size={16} />
+          Add Link
         </PrimaryButton>
       </PageHeader>
 
@@ -96,8 +99,8 @@ export const AnimalsWithCategoriesPage = () => {
         <Table>
           <Thead>
             <tr>
-              <Th>ცხოველი</Th>
-              <Th>კატეგორია</Th>
+              <Th>Animal</Th>
+              <Th>Category</Th>
               <Th />
             </tr>
           </Thead>
@@ -107,36 +110,32 @@ export const AnimalsWithCategoriesPage = () => {
                 <Td>{getAnimalName(link.animal_id)}</Td>
                 <Td>{getCategoryTitle(link.category_id)}</Td>
                 <ActionsCell>
-                  <IconTextButton
+                  <IconButton
+                    title="Remove link"
                     onClick={() => dispatch(removeAnimalFromCategory(link.id))}
                   >
-                    წაშლა
-                  </IconTextButton>
+                    <Trash2 size={16} />
+                  </IconButton>
                 </ActionsCell>
               </Tr>
             ))}
           </tbody>
         </Table>
 
-        {!loading && links.length === 0 && (
-          <EmptyState>კავშირები არ მოიძებნა</EmptyState>
-        )}
+        {!loading && links.length === 0 && <EmptyState>No links found</EmptyState>}
       </TableWrapper>
 
       {isCreateOpen && (
-        <Modal
-          title="ცხოველის კატეგორიაში დამატება"
-          onClose={() => setIsCreateOpen(false)}
-        >
+        <Modal title="Add Animal To Category" onClose={() => setIsCreateOpen(false)}>
           <FormWrapper as="div">
             <FieldGroup>
-              <Label htmlFor="animal-select">ცხოველი</Label>
+              <Label htmlFor="animal-select">Animal</Label>
               <select
                 id="animal-select"
                 value={selectedAnimalId}
                 onChange={(event) => setSelectedAnimalId(event.target.value)}
               >
-                <option value="">-- აირჩიეთ --</option>
+                <option value="">-- Select --</option>
                 {animals.map((animal) => (
                   <option key={animal.id} value={animal.id}>
                     {animal.name}
@@ -146,13 +145,13 @@ export const AnimalsWithCategoriesPage = () => {
             </FieldGroup>
 
             <FieldGroup>
-              <Label htmlFor="category-select">კატეგორია</Label>
+              <Label htmlFor="category-select">Category</Label>
               <select
                 id="category-select"
                 value={selectedCategoryId}
                 onChange={(event) => setSelectedCategoryId(event.target.value)}
               >
-                <option value="">-- აირჩიეთ --</option>
+                <option value="">-- Select --</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.title}
@@ -164,11 +163,11 @@ export const AnimalsWithCategoriesPage = () => {
             {validationError && <ErrorText>{validationError}</ErrorText>}
 
             <FormActions>
-              <IconTextButton type="button" onClick={() => setIsCreateOpen(false)}>
-                გაუქმება
-              </IconTextButton>
+              <SecondaryButton type="button" onClick={() => setIsCreateOpen(false)}>
+                Cancel
+              </SecondaryButton>
               <PrimaryButton type="button" onClick={handleCreate}>
-                დამატება
+                Add
               </PrimaryButton>
             </FormActions>
           </FormWrapper>

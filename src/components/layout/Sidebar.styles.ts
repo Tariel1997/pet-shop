@@ -57,11 +57,3 @@ export const NavItem = styled(NavLink)`
     font-weight: 600;
   }
 `
-
-export const NavIcon = styled.span`
-  width: 20px;
-  height: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-`

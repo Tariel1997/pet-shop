@@ -38,7 +38,12 @@ export const CategoryForm = ({
     event.preventDefault()
 
     if (!title.trim()) {
-      setValidationError('სათაური სავალდებულოა')
+      setValidationError('Title is required')
+      return
+    }
+
+    if (!description.trim()) {
+      setValidationError('Description is required')
       return
     }
 
@@ -49,22 +54,22 @@ export const CategoryForm = ({
   return (
     <FormWrapper onSubmit={handleSubmit}>
       <FieldGroup>
-        <Label htmlFor="title">სათაური</Label>
+        <Label htmlFor="title">Title</Label>
         <Input
           id="title"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="მაგ. ძაღლები"
+          placeholder="e.g. Dogs"
         />
       </FieldGroup>
 
       <FieldGroup>
-        <Label htmlFor="description">აღწერა</Label>
+        <Label htmlFor="description">Description</Label>
         <TextArea
           id="description"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
-          placeholder="კატეგორიის მოკლე აღწერა"
+          placeholder="A short description of the category"
         />
       </FieldGroup>
 
@@ -72,10 +77,10 @@ export const CategoryForm = ({
 
       <FormActions>
         <SecondaryButton type="button" onClick={onCancel}>
-          გაუქმება
+          Cancel
         </SecondaryButton>
         <PrimaryButton type="submit" disabled={submitting}>
-          {submitting ? 'ინახება...' : 'შენახვა'}
+          {submitting ? 'Saving...' : 'Save'}
         </PrimaryButton>
       </FormActions>
     </FormWrapper>

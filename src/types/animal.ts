@@ -8,6 +8,7 @@ export interface Animal {
   description: string
   isPopular: boolean
   stock: number
+  imageUrl: string
 }
 
 export type AnimalFormData = Omit<Animal, 'id'>

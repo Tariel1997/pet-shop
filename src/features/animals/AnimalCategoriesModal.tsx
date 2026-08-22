@@ -48,9 +48,9 @@ export const AnimalCategoriesModal = ({
   }
 
   return (
-    <Modal title={`${animal.name} - კატეგორიები`} onClose={onClose}>
+    <Modal title={`${animal.name} - Categories`} onClose={onClose}>
       <FormWrapper as="div">
-        {categories.length === 0 && <p>კატეგორიები ჯერ არ არის შექმნილი</p>}
+        {categories.length === 0 && <p>No categories created yet</p>}
 
         {categories.map((category) => {
           const isChecked = linksForAnimal.some(

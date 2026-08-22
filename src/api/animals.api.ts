@@ -1,6 +1,6 @@
 import { API_KEY, BASE_URL } from '../config.ts'
 import type { Animal, AnimalFormData } from '../types/animal.ts'
-import type { EntityId } from '../types/common.ts'
+import type { ApiStatus, EntityId } from '../types/common.ts'
 
 const headers: HeadersInit = {
   'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ const updateAnimal = async (id: EntityId, body: AnimalFormData) => {
   return await response.json()
 }
 
-const deleteAnimal = async (id: EntityId) => {
+const deleteAnimal = async (id: EntityId): Promise<ApiStatus> => {
   const response = await fetch(`${BASE_URL}/animals/${id}`, {
     method: 'DELETE',
     headers,
@@ -81,7 +81,7 @@ const deleteAnimal = async (id: EntityId) => {
 
   if (!response.ok) throw new Error(await parseErrorMessage(response))
 
-  return { status: 'success' as const }
+  return { status: 'success' }
 }
 
 export { fetchAnimals, createAnimal, updateAnimal, deleteAnimal }

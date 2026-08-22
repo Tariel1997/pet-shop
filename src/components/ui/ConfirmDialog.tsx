@@ -1,3 +1,5 @@
+import { Trash2 } from 'lucide-react'
+
 import { Modal } from './Modal.tsx'
 import { DangerButton, SecondaryButton } from './styles/Button.styles.ts'
 import { FormActions } from './styles/Form.styles.ts'
@@ -19,10 +21,11 @@ export const ConfirmDialog = ({
     <p>{message}</p>
     <FormActions>
       <SecondaryButton type="button" onClick={onCancel}>
-        გაუქმება
+        Cancel
       </SecondaryButton>
       <DangerButton type="button" onClick={onConfirm}>
-        წაშლა
+        <Trash2 size={16} />
+        Delete
       </DangerButton>
     </FormActions>
   </Modal>

@@ -1,6 +1,9 @@
 import styled from 'styled-components'
 
 export const PrimaryButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background-color: #1a1a1a;
   color: #ffffff;
   border: none;
@@ -21,6 +24,9 @@ export const PrimaryButton = styled.button`
 `
 
 export const SecondaryButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background-color: #ffffff;
   color: #1a1a1a;
   border: 1px solid #dcdcdc;
@@ -43,13 +49,15 @@ export const DangerButton = styled(SecondaryButton)`
   }
 `
 
-export const IconTextButton = styled.button`
+export const IconButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   color: #4a4a4a;
-  font-size: 13px;
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 6px;
   border-radius: 6px;
 
   &:hover {

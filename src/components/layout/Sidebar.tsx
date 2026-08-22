@@ -1,8 +1,9 @@
+import { Link2, PawPrint, Tags } from 'lucide-react'
+
 import {
   LogoCircle,
   LogoRow,
   LogoText,
-  NavIcon,
   NavItem,
   NavList,
   SidebarWrapper,
@@ -17,15 +18,15 @@ export const Sidebar = () => (
 
     <NavList>
       <NavItem to="/animals">
-        <NavIcon>🐾</NavIcon>
+        <PawPrint size={18} />
         Animals
       </NavItem>
       <NavItem to="/categories">
-        <NavIcon>📁</NavIcon>
+        <Tags size={18} />
         Categories
       </NavItem>
       <NavItem to="/animals-with-categories">
-        <NavIcon>🔗</NavIcon>
+        <Link2 size={18} />
         Animals With Categories
       </NavItem>
     </NavList>
