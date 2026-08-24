@@ -1,11 +1,14 @@
-import './App.css'
+import { BrowserRouter } from 'react-router-dom'
 
-function App() {
-  return (
-    <>
-      <div>App</div>
-    </>
-  )
-}
+import { Layout } from './components/layout/Layout.tsx'
+import { AppRouter } from './router/AppRouter.tsx'
+
+const App = () => (
+  <BrowserRouter>
+    <Layout>
+      <AppRouter />
+    </Layout>
+  </BrowserRouter>
+)
 
 export default App
