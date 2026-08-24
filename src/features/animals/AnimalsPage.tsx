@@ -108,7 +108,7 @@ export const AnimalsPage = () => {
         <Table>
           <Thead>
             <tr>
-              <Th />
+              <Th>Image</Th>
               <Th>Name</Th>
               <Th>Price (USD)</Th>
               <Th>Price (GEL)</Th>
@@ -133,7 +133,11 @@ export const AnimalsPage = () => {
                 <Td>{animal.name}</Td>
                 <Td>${animal.priceUSD.toFixed(2)}</Td>
                 <Td>{animal.priceGEL} ₾</Td>
-                <Td>{animal.description}</Td>
+                <Td>
+                  {animal.description.length > 30
+                    ? `${animal.description.slice(0, 30)}...`
+                    : animal.description}
+                </Td>
                 <Td>
                   <Badge $popular={animal.isPopular}>
                     {animal.isPopular ? 'Popular' : 'Regular'}
